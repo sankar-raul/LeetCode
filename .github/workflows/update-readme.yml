@@ -23,6 +23,14 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Restore LeetCode metadata cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/leetcode-metadata.json
+          key: leetcode-metadata-${{ runner.os }}-${{ hashFiles('scripts/update_readme.py') }}
+          restore-keys: |
+            leetcode-metadata-${{ runner.os }}-
+
       - name: Generate solution statistics
         run: python scripts/update_readme.py
 
