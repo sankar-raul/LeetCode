@@ -7,8 +7,11 @@ import json
 import os
 import re
 import urllib.request
+from urllib.error import HTTPError, URLError
 from collections import Counter
 from pathlib import Path
+from time import sleep
+from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +21,21 @@ END_MARKER = "<!-- SOLUTION_STATS_END -->"
 METADATA_URL = os.environ.get(
     "LEETCODE_METADATA_URL", "https://leetcode.com/api/problems/all/"
 )
+GRAPHQL_URL = os.environ.get("LEETCODE_GRAPHQL_URL", "https://leetcode.com/graphql")
+REQUEST_TIMEOUT = 10
+MAX_RETRIES = 2
+DIFFICULTIES = {"Easy", "Medium", "Hard"}
+QUESTION_QUERY = """
+query question($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    questionFrontendId
+    title
+    titleSlug
+    difficulty
+  }
+}
+"""
+_QUESTION_CACHE: dict[tuple[int, str], str] = {}
 
 
 def solution_ids() -> list[int]:
@@ -31,24 +49,112 @@ def solution_ids() -> list[int]:
     return sorted(set(ids))
 
 
-def load_metadata() -> dict[int, str]:
-    request = urllib.request.Request(
-        METADATA_URL,
-        headers={"User-Agent": "sankar-raul/LeetCode statistics updater"},
-    )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        payload = json.load(response)
+def request_json(url: str, payload: dict[str, Any] | None = None) -> Any:
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": "sankar-raul/LeetCode statistics updater",
+    }
+    data = None
+    if payload is not None:
+        headers["Content-Type"] = "application/json"
+        data = json.dumps(payload).encode("utf-8")
 
-    levels = {1: "Easy", 2: "Medium", 3: "Hard"}
-    metadata = {}
+    for attempt in range(MAX_RETRIES + 1):
+        request = urllib.request.Request(url, data=data, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+                return json.load(response)
+        except HTTPError as error:
+            if error.code not in {429, 500, 502, 503, 504} or attempt == MAX_RETRIES:
+                raise
+        except (URLError, TimeoutError):
+            if attempt == MAX_RETRIES:
+                raise
+        sleep(0.25 * (attempt + 1))
+
+    raise RuntimeError("LeetCode request failed")
+
+
+def problem_slugs() -> dict[int, str]:
+    payload = request_json(METADATA_URL)
+    if not isinstance(payload, dict):
+        raise ValueError("LeetCode problem response was not an object")
+    slugs = {}
     for entry in payload.get("stat_status_pairs", []):
         stat = entry.get("stat", {})
         question_id = stat.get("question_id")
-        level = levels.get(entry.get("difficulty", {}).get("level"))
-        if question_id is not None and level:
-            metadata[int(question_id)] = level
-    if not metadata:
-        raise RuntimeError("LeetCode metadata response did not contain any problems")
+        slug = stat.get("question__title_slug")
+        if question_id is None or not isinstance(slug, str) or not slug:
+            continue
+        try:
+            slugs[int(question_id)] = slug
+        except (TypeError, ValueError):
+            continue
+    if not slugs:
+        raise RuntimeError("LeetCode problem response did not contain question slugs")
+    return slugs
+
+
+def question_metadata(question_id: int, slug: str) -> str | None:
+    cached = _QUESTION_CACHE.get((question_id, slug))
+    if cached is not None:
+        return cached
+
+    payload = request_json(
+        GRAPHQL_URL,
+        {"query": QUESTION_QUERY, "variables": {"titleSlug": slug}},
+    )
+    if not isinstance(payload, dict):
+        return None
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        return None
+    question = data.get("question")
+    if not isinstance(question, dict):
+        return None
+
+    returned_id = question.get("questionFrontendId")
+    returned_slug = question.get("titleSlug")
+    difficulty = question.get("difficulty")
+    if str(returned_id) != str(question_id) or returned_slug != slug:
+        return None
+    if difficulty not in DIFFICULTIES:
+        return None
+    _QUESTION_CACHE[(question_id, slug)] = difficulty
+    return difficulty
+
+
+def load_metadata() -> dict[int, str]:
+    try:
+        slugs = problem_slugs()
+    except (
+        HTTPError,
+        URLError,
+        TimeoutError,
+        ValueError,
+        RuntimeError,
+        json.JSONDecodeError,
+    ):
+        return {}
+    metadata = {}
+    for problem_id in solution_ids():
+        slug = slugs.get(problem_id)
+        if slug is None:
+            continue
+        try:
+            difficulty = question_metadata(problem_id, slug)
+        except (
+            HTTPError,
+            URLError,
+            TimeoutError,
+            TypeError,
+            ValueError,
+            AttributeError,
+            json.JSONDecodeError,
+        ):
+            continue
+        if difficulty is not None:
+            metadata[problem_id] = difficulty
     return metadata
 
 
