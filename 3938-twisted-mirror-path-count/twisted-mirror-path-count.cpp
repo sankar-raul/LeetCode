@@ -18,13 +18,12 @@ public:
                 return count_for_direction;
             }
         }
-        int total_paths = 0;
         if (grid[i][j] == 0) {
             int right = countPath(i, j + 1, grid, 1, dp);
             dp[i][j].second = right;
             int down = countPath(i + 1, j, grid, 0, dp);
             dp[i][j].first = down;
-            total_paths = (right + down) % MOD;
+            return (right + down) % MOD;
         } else {
             if (direction == 1) {  // reflect to down 😊
                 dp[i][j].second = countPath(i + 1, j, grid, 0, dp); 
@@ -34,7 +33,7 @@ public:
                 return dp[i][j].first;
             }
         }
-        return total_paths;
+        return 0;
     }
     int uniquePaths(vector<vector<int>>& grid) {
         m = grid.size(), n = grid[0].size();
