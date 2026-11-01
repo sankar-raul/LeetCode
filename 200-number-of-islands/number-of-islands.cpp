@@ -10,6 +10,7 @@ public:
         is_island(i-1, j, grid);
         is_island(i, j+1, grid);
         is_island(i, j-1, grid);
+        return;
     }
     int numIslands(vector<vector<char>>& grid) {
         m = grid.size(), n = grid[0].size();
