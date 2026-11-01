@@ -1,6 +1,6 @@
 class Solution {
 public:
-    void comb(vector<int>& candidates, int i, int sum, int &target, vector<int> path, vector<vector<int>>& res) {
+    void comb(vector<int>& candidates, int i, int sum, int &target, vector<int>& path, vector<vector<int>>& res) {
         if (sum >= target) {
             cout << sum << endl;
             if (sum == target) {
@@ -18,7 +18,8 @@ public:
     }
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
         vector<vector<int>> res;
-        comb(candidates, 0, 0, target, {}, res);
+        vector<int> path;
+        comb(candidates, 0, 0, target, path, res);
         return res;
     }
 };
