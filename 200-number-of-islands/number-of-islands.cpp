@@ -16,9 +16,9 @@ public:
         int islands = 0;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] != '0') {
-                    is_island(i, j, grid);
+                if (grid[i][j] == '1') {
                     islands++;
+                    is_island(i, j, grid);
                 }
             }
         }
