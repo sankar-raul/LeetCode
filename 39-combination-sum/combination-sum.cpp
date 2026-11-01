@@ -2,7 +2,6 @@ class Solution {
 public:
     void comb(vector<int>& candidates, int i, int sum, int &target, vector<int>& path, vector<vector<int>>& res) {
         if (sum >= target) {
-            cout << sum << endl;
             if (sum == target) {
                 res.push_back(path);
             }
