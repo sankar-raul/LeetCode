@@ -1,14 +1,11 @@
 class Solution {
 public:
     int minMoves(vector<int>& nums) {
-        int mini = 1e9;
+        int mini = 1e9, sum = 0;
         for (int &num : nums) {
+            sum += num;
             mini = min(num, mini);
         }
-        int moves = 0;
-        for (int &num : nums) {
-            moves += num - mini;
-        }
-        return moves;
+        return sum - (mini * nums.size());
     }
 };
