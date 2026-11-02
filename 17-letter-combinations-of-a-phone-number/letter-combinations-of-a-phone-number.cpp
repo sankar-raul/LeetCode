@@ -1,6 +1,6 @@
 class Solution {
 public:
-    string keys[8] = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    vector<string> keys = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
     void comb(string &digits, int idx, vector<string>& res, string &curr_str) {
         if (idx == digits.size()) {
             res.push_back(curr_str);
