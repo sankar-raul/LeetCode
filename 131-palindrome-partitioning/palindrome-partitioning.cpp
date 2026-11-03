@@ -17,11 +17,11 @@ public:
             res.push_back(parts);
             return;
         }
+        string str;
         for (int i = idx; i < n; ++i) {
-            // str.push_back(s[i]);
+            str.push_back(s[i]);
             if (is_pal(idx, i, s)) {
-                parts.emplace_back(s.substr(idx, i - idx + 1));
-                // parts.push_back(str);
+                parts.push_back(str);
                 backtrace(i+1, n, s, parts, res);
                 parts.pop_back();
             }
