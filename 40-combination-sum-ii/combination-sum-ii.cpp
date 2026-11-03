@@ -1,7 +1,7 @@
 class Solution {
 public:
     void backtrace(int idx, int n, int sum, int target, vector<int>& path, vector<int>& candidates, vector<vector<int>>& res) {
-        if (sum >= target || idx == n) {
+        if (idx == n || sum + candidates[idx] > target) {
             if (sum == target) res.push_back(path);
             return;
         }
