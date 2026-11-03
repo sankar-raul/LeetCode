@@ -7,6 +7,7 @@ public:
         }
         for (int i = idx; i < n; ++i) {
             if (candidates[idx] == candidates[i]) continue;
+            if (candidates[idx] + sum > target) break;
             backtrace(i, n, sum, target, path, candidates, res);
             break;
         }
