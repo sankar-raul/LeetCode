@@ -5,13 +5,11 @@ public:
             if (sum == target) res.push_back(path);
             return;
         }
-        int next = idx;
-        while (next < n-1) {
-            if (candidates[idx] == candidates[++next]) continue;
-            if (candidates[next] + sum > target) break;
-            backtrace(next, n, sum, target, path, candidates, res);
-            break;
+        int next = idx+1;
+        while (next < n && candidates[idx] == candidates[next]) {
+            next++;
         }
+        backtrace(next, n, sum, target, path, candidates, res);
         path.push_back(candidates[idx]);
         backtrace(idx+1, n, sum + candidates[idx], target, path, candidates, res);
         path.pop_back();
