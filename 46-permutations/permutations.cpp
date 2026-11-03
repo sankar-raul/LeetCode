@@ -16,7 +16,7 @@ public:
         }
     }
     vector<vector<int>> permute(vector<int>& nums) {
-        vector<bool> seen(nums.size()); // -10 to 10
+        vector<bool> seen(nums.size());
         vector<vector<int>> res;
         vector<int> seq;
         backtrace(0, nums.size(), nums, seq, seen, res);
