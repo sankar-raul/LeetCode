@@ -1,21 +1,19 @@
 class Solution {
 public:
-    void backtrace(int idx, int n, vector<int>& nums, vector<int>& subset, vector<vector<int>>& res) {
+    void backtrace(int idx, int n, vector<int>& subset, vector<int>& nums, vector<vector<int>>& res) {
         if (idx == n) {
             res.push_back(subset);
             return;
-        };
-
-        backtrace(idx+1, n, nums, subset, res);
-        
+        }
+        backtrace(idx+1, n, subset, nums, res);
         subset.push_back(nums[idx]);
-        backtrace(idx+1, n, nums, subset, res);
+        backtrace(idx+1, n, subset, nums, res);
         subset.pop_back();
     }
     vector<vector<int>> subsets(vector<int>& nums) {
         vector<vector<int>> res;
         vector<int> subset;
-        backtrace(0, nums.size(), nums, subset, res);
+        backtrace(0, nums.size(), subset, nums, res);
         return res;
     }
 };
