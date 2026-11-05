@@ -2,18 +2,17 @@ class Solution {
 public:
     vector<int> partitionLabels(string s) {
         vector<int> res;
-        unordered_map<char, int> mp;
-        unordered_set<char> seen;
+        vector<int> mp(26);
         for (int i = 0; i < s.size(); ++i) {
-            mp[s[i]] = i;
+            mp[s[i] - 'a'] = i;
         }
         int left = 0;
-        int right = mp[s[0]];
-        seen.insert(s[0]);
+        int right = mp[s[0] - 'a'];
+        mp[s[0] - 'a'] = -1;
         for (int i = 1; i < s.size(); ++i) {
-            int last_seen = mp[s[i]];
-            if (!seen.count(s[i])) {
-                seen.insert(s[i]);
+            int last_seen = mp[s[i] - 'a'];
+            if (last_seen != -1) {
+                mp[s[i] - 'a'] = -1;
                 int p_a = i;
                 int p_b = min(right, last_seen);
                 int overlap = p_b - p_a;
