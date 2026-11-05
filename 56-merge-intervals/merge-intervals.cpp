@@ -8,7 +8,7 @@ public:
         int left = intervals[0][0];
         int right = intervals[0][1];
         for (int i = 1; i < intervals.size(); ++i) {
-            int point_a = max(left, intervals[i][0]);
+            int point_a = intervals[i][0];
             int point_b = min(right, intervals[i][1]);
             int overlap = point_b - point_a;
             if (overlap >= 0) { // its overlap
