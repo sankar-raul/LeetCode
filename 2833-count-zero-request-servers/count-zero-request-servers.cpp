@@ -22,7 +22,6 @@ public:
 
         for (auto& [t, idx] : query_idx) {
 
-            // Add logs within the right boundary.
             while (j < logs.size() && logs[j][1] <= t) {
                 int server = logs[j][0];
 
@@ -33,7 +32,6 @@ public:
                 j++;
             }
 
-            // Remove logs outside the left boundary.
             while (i < j && logs[i][1] < t - x) {
                 int server = logs[i][0];
 
