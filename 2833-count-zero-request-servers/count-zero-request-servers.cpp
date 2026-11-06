@@ -42,7 +42,6 @@ public:
                 i++;
             }
 
-            // Store result in original query order.
             res[idx] = n - active_servers;
         }
 
