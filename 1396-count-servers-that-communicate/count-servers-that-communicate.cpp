@@ -1,39 +1,24 @@
 class Solution {
 public:
+
     int countServers(vector<vector<int>>& grid) {
-        int numRows = grid.size(), numCols = grid[0].size();
-        int communicableServersCount = 0;
-
-        for (int row = 0; row < numRows; ++row) {
-            for (int col = 0; col < numCols; ++col) {
-                if (grid[row][col] == 1) {
-                    bool canCommunicate = false;
-
-                    for (int otherCol = 0; otherCol < numCols; ++otherCol) {
-                        if (otherCol != col && grid[row][otherCol] == 1) {
-                            canCommunicate = true;
-                            break;
-                        }
-                    }
-
-                    if (canCommunicate) {
-                        communicableServersCount++;
-                    } else {
-                        for (int otherRow = 0; otherRow < numRows; ++otherRow) {
-                            if (otherRow != row && grid[otherRow][col] == 1) {
-                                canCommunicate = true;
-                                break;
-                            }
-                        }
-
-                        if (canCommunicate) {
-                            communicableServersCount++;
-                        }
-                    }
-                }
+        int m = grid.size(), n = grid[0].size();
+        vector<int> column(n);
+        vector<int> row(m);
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (!grid[i][j]) continue;
+                column[j]++;
+                row[i]++;
             }
         }
-
-        return communicableServersCount;
+        int count = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (!grid[i][j]) continue;
+                count += column[j] > 1 || row[i] > 1;
+            }
+        }
+        return count;
     }
 };
