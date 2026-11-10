@@ -6,7 +6,7 @@ public:
             return a > b;
         });
         int sum = 0, res_sum = 0;
-        for (int &num : nums) {
+        for (int num : nums) {
             sum += num;
         }
         int i = 0;
