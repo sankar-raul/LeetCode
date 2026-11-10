@@ -12,7 +12,8 @@ public:
         int i = 0;
         while (res_sum <= sum - res_sum) {
             res_sum += nums[i];
-            res.push_back(nums[i++]);
+            res.push_back(nums[i]);
+            i++;
         }
         return res;
     }
