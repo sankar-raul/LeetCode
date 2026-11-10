@@ -6,8 +6,8 @@ public:
             return a > b;
         });
         int sum = 0, res_sum = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            sum += nums[i];
+        for (int &num : nums) {
+            sum += num;
         }
         int i = 0;
         while (res_sum <= sum - res_sum) {
