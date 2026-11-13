@@ -2,7 +2,7 @@ class Solution {
 public:
     vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
         stack<int> st;
-        vector<int> res(nums1.size());
+        vector<int> res;
         unordered_map<int, int> nxt;
         int n = nums2.size();
         for (int i = n - 1; i >= 0; --i) {
@@ -16,9 +16,9 @@ public:
         }
 
         for (int i = 0; i < nums1.size(); ++i) {
-            res[i] = nxt[nums1[i]];
+            res.push_back(nxt[nums1[i]]);
         }
-        
+
         return res;
     }
 };
