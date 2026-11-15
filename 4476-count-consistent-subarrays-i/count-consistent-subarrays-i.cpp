@@ -7,7 +7,7 @@ public:
             for (int j = i; j < n; ++j) {
                 mini = min(mini, nums[j]);
                 _and &= nums[j];
-                count += mini == _and;
+                if (mini == _and) count++;
             }
         }
         return count;
