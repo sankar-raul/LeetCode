@@ -6,7 +6,7 @@ public:
             int _and = -1, mini = 101;
             for (int j = i; j < n; ++j) {
                 mini = min(mini, nums[j]);
-                _and &= nums[j];
+                _and = _and & nums[j];
                 if (mini == _and) count++;
             }
         }
