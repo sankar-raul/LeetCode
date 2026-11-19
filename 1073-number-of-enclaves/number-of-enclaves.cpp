@@ -15,7 +15,8 @@ public:
                 if (grid[i][j] == 1) {
                     bool has_boundary = false;
                     int cnt = dfs(i, j, m, n, grid, has_boundary);
-                    count += cnt * !(has_boundary);
+                    if (!has_boundary)
+                        count += cnt;
                 }
             }
         }
