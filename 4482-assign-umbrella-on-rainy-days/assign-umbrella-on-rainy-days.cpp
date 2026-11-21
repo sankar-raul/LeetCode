@@ -2,21 +2,21 @@ class Solution {
 public:
     vector<string> assignUmbrella(vector<int>& rain) {
         int alice = 0, bob = 0, n = rain.size();
-        vector<string> res;
+        vector<string> res(rain.size());
         for (int i = 0; i < n; ++i) {
             if (i < n - 1 && rain[i] && rain[i+1]) {
                 if (alice > bob) {
-                    res.push_back("Bob");
+                    res[i] = "Bob";
                     bob++;
                 } else {
-                    res.push_back("Alice");
+                    res[i] = "Alice";
                     alice++;
                 }
             } else if (rain[i]) {
                 bob++;
-                res.push_back("Bob");
+                res[i] = "Bob";
             } else {
-                res.push_back("None");
+                res[i] = "None";
             }
         }
         return res;
