@@ -1,6 +1,7 @@
 class Solution {
 public:
-    int backtrace(int i, int j, int m, int n, vector<vector<int>>& grid, int free_cell, int count) {
+    int backtrace(int i, int j, int m, int n, vector<vector<int>>& grid,
+                  int free_cell, int count) {
         if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == -1) {
             return 0;
         }
@@ -9,7 +10,10 @@ public:
         }
         int prev = grid[i][j];
         grid[i][j] = -1;
-        int total = backtrace(i+1, j, m, n, grid, free_cell, count+1) + backtrace(i-1, j, m, n, grid, free_cell, count+1) + backtrace(i, j+1, m, n, grid, free_cell, count+1) + backtrace(i, j-1, m, n, grid, free_cell, count+1);
+        int total = backtrace(i + 1, j, m, n, grid, free_cell, count + 1) +
+                    backtrace(i - 1, j, m, n, grid, free_cell, count + 1) +
+                    backtrace(i, j + 1, m, n, grid, free_cell, count + 1) +
+                    backtrace(i, j - 1, m, n, grid, free_cell, count + 1);
         grid[i][j] = prev;
         return total;
     }
@@ -25,6 +29,7 @@ public:
                 }
             }
         }
-        return backtrace(start_cell.first, start_cell.second, m, n, grid, free_cell, 0);
+        return backtrace(start_cell.first, start_cell.second, m, n, grid,
+                         free_cell, 0);
     }
 };
